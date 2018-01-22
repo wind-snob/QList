@@ -99,7 +99,7 @@ extension ListViewController {
     
     func searchBarSetup() {
         searchBar.delegate = self
-        searchBar.showsCancelButton = true
+        searchBar.showsCancelButton = false
         searchBar.placeholder = "Add new item"
         searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
         searchBar.showsScopeBar = true
@@ -121,7 +121,21 @@ extension ListViewController {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         print("searchBar text did change")
+        if isSearchBarEmpty() {
+            searchBar.showsCancelButton = false
+        } else {
+            searchBar.showsCancelButton = true
+        }
         searchResults(for: searchText)
+        tableView.reloadData()
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        print("......searchBarTextDidEndEditing")
+        // add new item
+        let item = Item(name: searchBar.text!)
+        items.append(item)
+        searchBar.text = ""
         tableView.reloadData()
     }
     
