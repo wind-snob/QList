@@ -11,8 +11,13 @@ import UIKit
 class ListViewController: UIViewController, UISearchBarDelegate {
     
     var items = [Item(name: "Milk"), Item(name: "Bread"), Item(name: "Eggs"), Item(name: "Chicken"), Item(name: "Coffee")]
-    let selectedItems = [Item]()
     var foundItems = [Item]()
+    
+    var selectedItems: [Item] {
+        return items.filter({ (item: Item) -> Bool in
+            return item.isSelected
+        })
+    }
     
     let searchBar = UISearchBar()
     @IBOutlet weak var tableView: UITableView!
@@ -38,7 +43,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isSearchBarEmpty() {
-            return items.count
+            return selectedItems.count
         } else {
             return foundItems.count
         }
@@ -51,14 +56,12 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         let isItemCompleted: Bool
         
         if isSearchBarEmpty() {
-            itemName = items[indexPath.row].name
-            isItemCompleted = items[indexPath.row].isCompleted
+            itemName = selectedItems[indexPath.row].name
+            isItemCompleted = selectedItems[indexPath.row].isCompleted
         } else {
             itemName = foundItems[indexPath.row].name
             isItemCompleted = foundItems[indexPath.row].isCompleted
         }
-        
-        //itemCell.textLabel?.text = itemName
         
         itemCell.itemLabel.text = itemName
         
@@ -71,26 +74,29 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let itemCell = tableView.cellForRow(at: indexPath) else {
+        
+        guard let itemCell = tableView.cellForRow(at: indexPath) as? ItemCell else {
             return
         }
-        // get the corresponding item and negate the completed status
-        var item = items[indexPath.row]
-        item.isCompleted = !item.isCompleted
-        toggleCheckbox(for: itemCell, withState: item.isCompleted)
-        items[indexPath.row] = item
-        
+        // get the corresponding item and negate the selected status
+        let selectedFoundItem = foundItems[indexPath.row]
+        let index = items.index { (item: Item) -> Bool in
+            return item.name.lowercased() == selectedFoundItem.name.lowercased()
+        }
+        guard let itemIndex = index else {
+            return
+        }
+        items[itemIndex].isSelected = !items[itemIndex].isSelected
+        toggleSelection(for: itemCell, withState: items[itemIndex].isSelected)
     }
     
-    func toggleCheckbox(for cell: UITableViewCell, withState completed: Bool) {
-        if !completed {
+    func toggleSelection(for cell: ItemCell, withState isSelected: Bool) {
+        if !isSelected {
             cell.accessoryType = .none
-            cell.textLabel?.textColor = UIColor.black
-            cell.detailTextLabel?.textColor = UIColor.black
+            cell.itemLabel?.textColor = UIColor.black
         } else {
             cell.accessoryType = .checkmark
-            cell.textLabel?.textColor = UIColor.gray
-            cell.detailTextLabel?.textColor = UIColor.gray
+            cell.itemLabel?.textColor = UIColor.gray
         }
     }
 }
