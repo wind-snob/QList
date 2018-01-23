@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F404AD1F20178B1F00F2D9C8 /* ItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F404AD1E20178B1F00F2D9C8 /* ItemCell.swift */; };
 		F419E55120150EE80037AACD /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = F419E55020150EE80037AACD /* Item.swift */; };
 		F4E0868E201426C100364F7C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E0868D201426C100364F7C /* AppDelegate.swift */; };
 		F4E08690201426C100364F7C /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E0868F201426C100364F7C /* ListViewController.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F404AD1E20178B1F00F2D9C8 /* ItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
 		F419E55020150EE80037AACD /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		F4E0868A201426C100364F7C /* QList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4E0868D201426C100364F7C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			children = (
 				F4E0868D201426C100364F7C /* AppDelegate.swift */,
 				F4E0868F201426C100364F7C /* ListViewController.swift */,
+				F404AD1E20178B1F00F2D9C8 /* ItemCell.swift */,
 				F419E55020150EE80037AACD /* Item.swift */,
 				F4E08691201426C100364F7C /* Main.storyboard */,
 				F4E08694201426C100364F7C /* Assets.xcassets */,
@@ -139,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F404AD1F20178B1F00F2D9C8 /* ItemCell.swift in Sources */,
 				F4E08690201426C100364F7C /* ListViewController.swift in Sources */,
 				F419E55120150EE80037AACD /* Item.swift in Sources */,
 				F4E0868E201426C100364F7C /* AppDelegate.swift in Sources */,

@@ -45,7 +45,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let itemCell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath)
+        let itemCell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
         
         let itemName: String
         let isItemCompleted: Bool
@@ -58,7 +58,9 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
             isItemCompleted = foundItems[indexPath.row].isCompleted
         }
         
-        itemCell.textLabel?.text = itemName
+        //itemCell.textLabel?.text = itemName
+        
+        itemCell.itemLabel.text = itemName
         
         if isItemCompleted {
             itemCell.accessoryType = .checkmark

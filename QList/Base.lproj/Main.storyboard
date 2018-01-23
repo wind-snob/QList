@@ -23,13 +23,35 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="checkmark" indentationWidth="10" reuseIdentifier="ItemCell" id="JXC-s6-ZT1">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="ItemCell" id="JXC-s6-ZT1" customClass="ItemCell" customModule="QList" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JXC-s6-ZT1" id="IPR-Es-CsI">
-                                            <rect key="frame" x="0.0" y="0.0" width="336" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PlV-1K-aC8">
+                                                    <rect key="frame" x="20" y="6" width="51" height="31"/>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vSM-Nc-OEd">
+                                                    <rect key="frame" x="77" y="11" width="278" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="PlV-1K-aC8" firstAttribute="centerY" secondItem="IPR-Es-CsI" secondAttribute="centerY" id="2Mt-hx-2JE"/>
+                                                <constraint firstAttribute="trailing" secondItem="vSM-Nc-OEd" secondAttribute="trailing" constant="20" symbolic="YES" id="Q2u-oq-C6S"/>
+                                                <constraint firstItem="PlV-1K-aC8" firstAttribute="leading" secondItem="IPR-Es-CsI" secondAttribute="leading" constant="20" symbolic="YES" id="VQe-0F-51c"/>
+                                                <constraint firstItem="vSM-Nc-OEd" firstAttribute="leading" secondItem="PlV-1K-aC8" secondAttribute="trailing" constant="8" symbolic="YES" id="Ztx-nN-qeO"/>
+                                                <constraint firstItem="vSM-Nc-OEd" firstAttribute="centerY" secondItem="IPR-Es-CsI" secondAttribute="centerY" id="phP-kn-GoQ"/>
+                                            </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="checkMark" destination="PlV-1K-aC8" id="2D8-XD-f4Y"/>
+                                            <outlet property="itemLabel" destination="vSM-Nc-OEd" id="Uwa-0v-Qbs"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
