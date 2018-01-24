@@ -115,6 +115,9 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
                 setSelection(for: itemCell, withState: items[itemIndex].isSelected)
             }
         }
+        // cancel search
+        searchBar.text = nil
+        searchBar.endEditing(true)
     }
     
     func setSelection(for cell: ItemCell, withState isSelected: Bool) {
@@ -156,27 +159,40 @@ extension ListViewController {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         print("searchBar text did change")
-        if isSearchBarEmpty {
-            searchBar.showsCancelButton = false
-        } else {
-            searchBar.showsCancelButton = true
-        }
+// decided not to show the cancel button
+//        if isSearchBarEmpty {
+//            searchBar.showsCancelButton = false
+//        } else {
+//            searchBar.showsCancelButton = true
+//        }
         searchResults(for: searchText)
         tableView.reloadData()
     }
     
+    // MARK: Add new item
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         print("......searchBarTextDidEndEditing")
-        // add new item
-        let item = Item(name: searchBar.text!)
-        items.append(item)
-        searchBar.text = ""
+        // if search text not empty then add new item
+        if let text = searchBar.text?.trimmingCharacters(in: .whitespaces) {
+            if text != "" {
+                // check if the name is already in the items table
+                // if yes then update, if not then append new item with the name
+                if let index = indexOfItem(withName: text.lowercased()) {
+                    items[index].isSelected = true
+                } else {
+                    let item = Item(name: text, isSelected: true)
+                    items.append(item)
+                }
+                searchBar.text = nil
+            }
+        }
         tableView.reloadData()
     }
     
     func searchResults(for text: String) {
         foundItems = items.filter({ (item: Item) -> Bool in
-            return item.name.lowercased().contains(text.lowercased())
+            // item name contains search text and item is not already selected
+            return item.name.lowercased().contains(text.lowercased()) && !item.isSelected
         })
     }
 }

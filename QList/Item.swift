@@ -21,6 +21,13 @@ struct Item {
         self.isCompleted = false
     }
     
+    init(name: String, isSelected: Bool) {
+        self.name = name
+        self.addedBy = "user@domain.com"
+        self.isSelected = isSelected
+        self.isCompleted = false
+    }
+    
     init(name: String, isCompleted: Bool) {
         self.name = name
         self.addedBy = "user@domain.com"
