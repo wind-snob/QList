@@ -105,19 +105,19 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
             return
         }
         
-        guard let itemCell = tableView.cellForRow(at: indexPath) as? ItemCell else {
-            return
-        }
-        // get the corresponding item and negate the selected status
-        let selectedFoundItem = foundItems[indexPath.row]
-        
-        if let itemIndex = indexOfItem(withName: selectedFoundItem.name) {
-            items[itemIndex].isSelected = !items[itemIndex].isSelected
-            toggleSelection(for: itemCell, withState: items[itemIndex].isSelected)
+        if let itemCell = tableView.cellForRow(at: indexPath) as? ItemCell {
+            
+            // get the corresponding item and negate the selected status
+            let selectedItem = foundItems[indexPath.row]
+            
+            if let itemIndex = indexOfItem(withName: selectedItem.name) {
+                items[itemIndex].isSelected = !items[itemIndex].isSelected
+                setSelection(for: itemCell, withState: items[itemIndex].isSelected)
+            }
         }
     }
     
-    func toggleSelection(for cell: ItemCell, withState isSelected: Bool) {
+    func setSelection(for cell: ItemCell, withState isSelected: Bool) {
         if !isSelected {
             cell.accessoryType = .none
             cell.itemLabel?.textColor = UIColor.black
