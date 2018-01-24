@@ -22,6 +22,14 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     let searchBar = UISearchBar()
     @IBOutlet weak var tableView: UITableView!
     
+    // given item name returns its index in the items array
+    func indexOfItem(withName name:String) -> Int? {
+        let index = items.index { (item: Item) -> Bool in
+            return item.name.lowercased() == name.lowercased()
+        }
+        return index
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBarSetup()
@@ -35,7 +43,24 @@ class ListViewController: UIViewController, UISearchBarDelegate {
 
 // MARK: TableView Delegates
 
-extension ListViewController: UITableViewDelegate, UITableViewDataSource {
+extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCellDelegate {
+    
+    // ItemCellDelegate protocol implementation
+    func didUpdateCell(withLabel label: UILabel, andCheckmark checkmark: UISwitch) {
+        
+        // update the model
+        guard let name = label.text else {
+            return
+        }
+        print("Update checkmark on label = \(name)")
+        let index = items.index { (item: Item) -> Bool in
+            return item.name.lowercased() == name.lowercased()
+        }
+        
+        if let index = index {
+            items[index].isCompleted = checkmark.isOn
+        }
+    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -53,19 +78,28 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         let itemCell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
         
         let itemName: String
-        let isItemCompleted: Bool
+        let isItemSelected: Bool
+        let isCheckmarkOn: Bool
+        
+        itemCell.delegate = self
         
         if isSearchBarEmpty {
+            // when no search then show selected items only
             itemName = selectedItems[indexPath.row].name
-            isItemCompleted = selectedItems[indexPath.row].isCompleted
+            isItemSelected = selectedItems[indexPath.row].isSelected
+            isCheckmarkOn = selectedItems[indexPath.row].isCompleted
         } else {
+            // when search is active then show search results
             itemName = foundItems[indexPath.row].name
-            isItemCompleted = foundItems[indexPath.row].isCompleted
+            isItemSelected = foundItems[indexPath.row].isSelected
+            // do not show checkmark status
+            isCheckmarkOn = false
         }
         
+        itemCell.itemCheckmark.setOn(isCheckmarkOn, animated: true)
         itemCell.itemLabel.text = itemName
         
-        if isItemCompleted {
+        if isItemSelected {
             itemCell.accessoryType = .checkmark
         } else {
             itemCell.accessoryType = .none
@@ -76,7 +110,9 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // only allow to select cell in search results
-        if isSearchBarEmpty { return }
+        if isSearchBarEmpty {
+            return
+        }
         
         guard let itemCell = tableView.cellForRow(at: indexPath) as? ItemCell else {
             return
@@ -117,8 +153,8 @@ extension ListViewController {
         searchBar.delegate = self
         searchBar.showsCancelButton = false
         searchBar.placeholder = "Add new item"
-        searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
-        searchBar.showsScopeBar = true
+        //searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
+        //searchBar.showsScopeBar = true
         navigationItem.titleView = searchBar
     }
     

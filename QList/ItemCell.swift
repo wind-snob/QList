@@ -8,10 +8,21 @@
 
 import UIKit
 
-class ItemCell: UITableViewCell {
+protocol ItemCellDelegate {
+    func didUpdateCell(withLabel label: UILabel, andCheckmark checkmark: UISwitch)
+}
 
-    @IBOutlet weak var checkMark: UISwitch!
+class ItemCell: UITableViewCell {
+    
+    var delegate: ItemCellDelegate?
+    
+    @IBOutlet weak var itemCheckmark: UISwitch!
     @IBOutlet weak var itemLabel: UILabel!
+    
+    @IBAction func toggleCheckmark(_ sender: UISwitch) {
+        print("Checkmark toggled.....")
+        delegate?.didUpdateCell(withLabel: itemLabel, andCheckmark: itemCheckmark)
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

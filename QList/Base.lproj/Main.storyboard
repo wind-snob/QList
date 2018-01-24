@@ -32,6 +32,9 @@
                                             <subviews>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PlV-1K-aC8">
                                                     <rect key="frame" x="20" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="toggleCheckmark:" destination="JXC-s6-ZT1" eventType="valueChanged" id="H3k-QT-WVT"/>
+                                                    </connections>
                                                 </switch>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vSM-Nc-OEd">
                                                     <rect key="frame" x="77" y="11" width="278" height="21"/>
@@ -49,7 +52,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="checkMark" destination="PlV-1K-aC8" id="2D8-XD-f4Y"/>
+                                            <outlet property="itemCheckmark" destination="PlV-1K-aC8" id="DRW-79-lpK"/>
                                             <outlet property="itemLabel" destination="vSM-Nc-OEd" id="Uwa-0v-Qbs"/>
                                         </connections>
                                     </tableViewCell>
