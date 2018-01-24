@@ -42,7 +42,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isSearchBarEmpty() {
+        if isSearchBarEmpty {
             return selectedItems.count
         } else {
             return foundItems.count
@@ -55,7 +55,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
         let itemName: String
         let isItemCompleted: Bool
         
-        if isSearchBarEmpty() {
+        if isSearchBarEmpty {
             itemName = selectedItems[indexPath.row].name
             isItemCompleted = selectedItems[indexPath.row].isCompleted
         } else {
@@ -74,6 +74,9 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        // only allow to select cell in search results
+        if isSearchBarEmpty { return }
         
         guard let itemCell = tableView.cellForRow(at: indexPath) as? ItemCell else {
             return
@@ -105,6 +108,11 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension ListViewController {
     
+    var isSearchBarEmpty: Bool {
+        // Returns true if the text is empty or nil
+        return searchBar.text?.isEmpty ?? true
+    }
+    
     func searchBarSetup() {
         searchBar.delegate = self
         searchBar.showsCancelButton = false
@@ -112,11 +120,6 @@ extension ListViewController {
         searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
         searchBar.showsScopeBar = true
         navigationItem.titleView = searchBar
-    }
-    
-    func isSearchBarEmpty() -> Bool {
-        // Returns true if the text is empty or nil
-        return searchBar.text?.isEmpty ?? true
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -129,7 +132,7 @@ extension ListViewController {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         print("searchBar text did change")
-        if isSearchBarEmpty() {
+        if isSearchBarEmpty {
             searchBar.showsCancelButton = false
         } else {
             searchBar.showsCancelButton = true
