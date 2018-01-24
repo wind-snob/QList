@@ -47,17 +47,8 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
     
     // ItemCellDelegate protocol implementation
     func didUpdateCell(withLabel label: UILabel, andCheckmark checkmark: UISwitch) {
-        
         // update the model
-        guard let name = label.text else {
-            return
-        }
-        print("Update checkmark on label = \(name)")
-        let index = items.index { (item: Item) -> Bool in
-            return item.name.lowercased() == name.lowercased()
-        }
-        
-        if let index = index {
+        if let name = label.text, let index = indexOfItem(withName: name) {
             items[index].isCompleted = checkmark.isOn
         }
     }
@@ -119,14 +110,11 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
         }
         // get the corresponding item and negate the selected status
         let selectedFoundItem = foundItems[indexPath.row]
-        let index = items.index { (item: Item) -> Bool in
-            return item.name.lowercased() == selectedFoundItem.name.lowercased()
+        
+        if let itemIndex = indexOfItem(withName: selectedFoundItem.name) {
+            items[itemIndex].isSelected = !items[itemIndex].isSelected
+            toggleSelection(for: itemCell, withState: items[itemIndex].isSelected)
         }
-        guard let itemIndex = index else {
-            return
-        }
-        items[itemIndex].isSelected = !items[itemIndex].isSelected
-        toggleSelection(for: itemCell, withState: items[itemIndex].isSelected)
     }
     
     func toggleSelection(for cell: ItemCell, withState isSelected: Bool) {
