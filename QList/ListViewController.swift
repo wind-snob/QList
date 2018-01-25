@@ -13,11 +13,17 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     var items = [Item(name: "Milk"), Item(name: "Bread"), Item(name: "Eggs"), Item(name: "Chicken"), Item(name: "Coffee")]
     var foundItems = [Item]()
     
-    var searchBarBeginEditing = false
+    var searchBarIsInFocus = false
     
     var selectedItems: [Item] {
         return items.filter({ (item: Item) -> Bool in
             return item.isSelected
+        })
+    }
+    
+    var notSelectedItems: [Item] {
+        return items.filter({ (item: Item) -> Bool in
+            return !item.isSelected
         })
     }
     
@@ -60,9 +66,9 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isSearchBarEmpty {
+        if searchBarIsEmpty {
             
-            if searchBarBeginEditing {
+            if searchBarIsInFocus {
                 print("Edit begin.....")
                 return items.count
             } else {
@@ -82,9 +88,9 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
         
         itemCell.delegate = self
         
-        if isSearchBarEmpty {
+        if searchBarIsEmpty {
             
-            if searchBarBeginEditing {
+            if searchBarIsInFocus {
                 print("Show all items.....")
                 itemName = items[indexPath.row].name
                 isItemSelected = items[indexPath.row].isSelected
@@ -116,15 +122,22 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        // only allow to select cell in search results
-        if isSearchBarEmpty {
+        // do not allow to select cell in...
+        if searchBarIsEmpty && !searchBarIsInFocus {
             return
         }
         
         if let itemCell = tableView.cellForRow(at: indexPath) as? ItemCell {
             
             // get the corresponding item and negate the selected status
-            let selectedItem = foundItems[indexPath.row]
+            
+            let selectedItem: Item
+            
+            if searchBarIsEmpty {
+                selectedItem = items[indexPath.row]
+            } else {
+                selectedItem = foundItems[indexPath.row]
+            }
             
             if let itemIndex = indexOfItem(withName: selectedItem.name) {
                 items[itemIndex].isSelected = !items[itemIndex].isSelected
@@ -151,7 +164,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
 
 extension ListViewController {
     
-    var isSearchBarEmpty: Bool {
+    var searchBarIsEmpty: Bool {
         // Returns true if the text is empty or nil
         return searchBar.text?.isEmpty ?? true
     }
@@ -182,13 +195,15 @@ extension ListViewController {
 //            searchBar.showsCancelButton = true
 //        }
         searchResults(for: searchText)
-        searchBarBeginEditing = false
         tableView.reloadData()
     }
     
     // MARK: Add new item
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         print("......searchBarTextDidEndEditing")
+        
+        searchBarIsInFocus = false
+        
         // if search text not empty then add new item
         if let text = searchBar.text?.trimmingCharacters(in: .whitespaces) {
             if text != "" {
@@ -209,7 +224,7 @@ extension ListViewController {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         print("searchBarTextDidBeginEditing")
         // show all items when focus goes to searchbar
-        searchBarBeginEditing = true
+        searchBarIsInFocus = true
         //foundItems = items
         tableView.reloadData()
     }
