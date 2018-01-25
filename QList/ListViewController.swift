@@ -10,7 +10,34 @@ import UIKit
 
 class ListViewController: UIViewController, UISearchBarDelegate {
     
-    var items = [Item(name: "Milk"), Item(name: "Bread"), Item(name: "Eggs"), Item(name: "Chicken"), Item(name: "Coffee")]
+    var items = [Item(name: "Apples"),
+                 Item(name: "Chicken"),
+                 Item(name: "Coffee"),
+                 Item(name: "Corn"),
+                 Item(name: "Cranberries"),
+                 Item(name: "Bacon"),
+                 Item(name: "Bagels"),
+                 Item(name: "Bananas"),
+                 Item(name: "Bread"),
+                 Item(name: "Butter"),
+                 Item(name: "Eggs"),
+                 Item(name: "Flour"),
+                 Item(name: "Ginger"),
+                 Item(name: "Lemon"),
+                 Item(name: "Mayo"),
+                 Item(name: "Milk"),
+                 Item(name: "Pastry"),
+                 Item(name: "Popcorn"),
+                 Item(name: "Potatoes"),
+                 Item(name: "Salmon"),
+                 Item(name: "Sugar"),
+                 Item(name: "Spinach"),
+                 Item(name: "Steak"),
+                 Item(name: "Turkey"),
+                 Item(name: "Wine"),
+                 Item(name: "Vinegar"),
+                 Item(name: "Yogurt"),]
+    
     var foundItems = [Item]()
     
     var searchBarIsInFocus = false
@@ -70,7 +97,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
             
             if searchBarIsInFocus {
                 print("Edit begin.....")
-                return items.count
+                return notSelectedItems.count
             } else {
                 return selectedItems.count
             }
@@ -92,9 +119,9 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
             
             if searchBarIsInFocus {
                 print("Show all items.....")
-                itemName = items[indexPath.row].name
-                isItemSelected = items[indexPath.row].isSelected
-                isCheckmarkOn = items[indexPath.row].isCompleted
+                itemName = notSelectedItems[indexPath.row].name
+                isItemSelected = notSelectedItems[indexPath.row].isSelected
+                isCheckmarkOn = notSelectedItems[indexPath.row].isCompleted
             } else {
                 // when no search then show selected items only
                 itemName = selectedItems[indexPath.row].name
@@ -134,7 +161,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
             let selectedItem: Item
             
             if searchBarIsEmpty {
-                selectedItem = items[indexPath.row]
+                selectedItem = notSelectedItems[indexPath.row]
             } else {
                 selectedItem = foundItems[indexPath.row]
             }
