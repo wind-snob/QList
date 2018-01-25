@@ -13,6 +13,8 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     var items = [Item(name: "Milk"), Item(name: "Bread"), Item(name: "Eggs"), Item(name: "Chicken"), Item(name: "Coffee")]
     var foundItems = [Item]()
     
+    var searchBarBeginEditing = false
+    
     var selectedItems: [Item] {
         return items.filter({ (item: Item) -> Bool in
             return item.isSelected
@@ -59,7 +61,13 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isSearchBarEmpty {
-            return selectedItems.count
+            
+            if searchBarBeginEditing {
+                print("Edit begin.....")
+                return items.count
+            } else {
+                return selectedItems.count
+            }
         } else {
             return foundItems.count
         }
@@ -75,10 +83,18 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
         itemCell.delegate = self
         
         if isSearchBarEmpty {
-            // when no search then show selected items only
-            itemName = selectedItems[indexPath.row].name
-            isItemSelected = selectedItems[indexPath.row].isSelected
-            isCheckmarkOn = selectedItems[indexPath.row].isCompleted
+            
+            if searchBarBeginEditing {
+                print("Show all items.....")
+                itemName = items[indexPath.row].name
+                isItemSelected = items[indexPath.row].isSelected
+                isCheckmarkOn = items[indexPath.row].isCompleted
+            } else {
+                // when no search then show selected items only
+                itemName = selectedItems[indexPath.row].name
+                isItemSelected = selectedItems[indexPath.row].isSelected
+                isCheckmarkOn = selectedItems[indexPath.row].isCompleted
+            }
         } else {
             // when search is active then show search results
             itemName = foundItems[indexPath.row].name
@@ -166,6 +182,7 @@ extension ListViewController {
 //            searchBar.showsCancelButton = true
 //        }
         searchResults(for: searchText)
+        searchBarBeginEditing = false
         tableView.reloadData()
     }
     
@@ -188,6 +205,15 @@ extension ListViewController {
         }
         tableView.reloadData()
     }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        print("searchBarTextDidBeginEditing")
+        // show all items when focus goes to searchbar
+        searchBarBeginEditing = true
+        //foundItems = items
+        tableView.reloadData()
+    }
+    
     
     func searchResults(for text: String) {
         foundItems = items.filter({ (item: Item) -> Bool in
