@@ -68,6 +68,9 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBarSetup()
+        
+        let nib = UINib(nibName: "DescriptionCell", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: "DescriptionCell")
     }
     
     override func didReceiveMemoryWarning() {
@@ -107,61 +110,37 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let itemCell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
-        
-        let itemName: String?
-        let isItemSelected: Bool?
-        let isCheckmarkOn: Bool?
-        
-        itemCell.delegate = self
         
         let itemsToDisplay: [Item]?
+        var showCheckmark: Bool?
         
         if searchBarIsEmpty {
-            
             if searchBarIsInFocus {
                 // when searchbar selected and no search text
                 itemsToDisplay = notSelectedItems
+                showCheckmark = false
             } else {
                 // when searchbar not selected and no search text then show selected items only
                 itemsToDisplay = selectedItems
+                showCheckmark = true
             }
         } else {
             // when searchbar selected and there is search text then show search results
             itemsToDisplay = foundItems
+            showCheckmark = false
         }
         
-
-        if searchBarIsEmpty {
-            
-            if searchBarIsInFocus {
-                // when searchbar selected and no search text
-                itemName = itemsToDisplay?[indexPath.row].name
-                isItemSelected = itemsToDisplay?[indexPath.row].isSelected
-                isCheckmarkOn = itemsToDisplay?[indexPath.row].isCompleted
-            } else {
-                // when searchbar not selected and no search text then show selected items only
-                itemName = itemsToDisplay?[indexPath.row].name
-                isItemSelected = itemsToDisplay?[indexPath.row].isSelected
-                isCheckmarkOn = itemsToDisplay?[indexPath.row].isCompleted
-            }
+        if showCheckmark! {
+            let itemCell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
+            itemCell.delegate = self
+            itemCell.itemLabel.text = itemsToDisplay![indexPath.row].name
+            itemCell.itemCheckmark.setOn(itemsToDisplay![indexPath.row].isCompleted, animated: true)
+            return itemCell
         } else {
-            // when searchbar selected and there is search text then show search results
-            itemName = itemsToDisplay?[indexPath.row].name
-            isItemSelected = itemsToDisplay?[indexPath.row].isSelected
-            // do not show checkmark status
-            isCheckmarkOn = false
+            let itemCell = tableView.dequeueReusableCell(withIdentifier: "DescriptionCell", for: indexPath) as! DescriptionCell
+            itemCell.itemLabel.text = itemsToDisplay![indexPath.row].name
+            return itemCell
         }
-        
-        itemCell.itemCheckmark.setOn(isCheckmarkOn!, animated: true)
-        itemCell.itemLabel.text = itemName
-        
-        if isItemSelected! {
-            itemCell.accessoryType = .checkmark
-        } else {
-            itemCell.accessoryType = .none
-        }
-        return itemCell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -170,23 +149,16 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
         if searchBarIsEmpty && !searchBarIsInFocus {
             return
         }
+        // get the corresponding item and negate the selected status
+        let selectedItem: Item
+        if searchBarIsEmpty {
+            selectedItem = notSelectedItems[indexPath.row]
+        } else {
+            selectedItem = foundItems[indexPath.row]
+        }
         
-        if let itemCell = tableView.cellForRow(at: indexPath) as? ItemCell {
-            
-            // get the corresponding item and negate the selected status
-            
-            let selectedItem: Item
-            
-            if searchBarIsEmpty {
-                selectedItem = notSelectedItems[indexPath.row]
-            } else {
-                selectedItem = foundItems[indexPath.row]
-            }
-            
-            if let itemIndex = indexOfItem(withName: selectedItem.name) {
-                items[itemIndex].isSelected = !items[itemIndex].isSelected
-                setSelection(for: itemCell, withState: items[itemIndex].isSelected)
-            }
+        if let itemIndex = indexOfItem(withName: selectedItem.name) {
+            items[itemIndex].isSelected = !items[itemIndex].isSelected
         }
         // cancel search
         searchBar.text = nil
