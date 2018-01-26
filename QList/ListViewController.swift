@@ -109,37 +109,54 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let itemCell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) as! ItemCell
         
-        let itemName: String
-        let isItemSelected: Bool
-        let isCheckmarkOn: Bool
+        let itemName: String?
+        let isItemSelected: Bool?
+        let isCheckmarkOn: Bool?
         
         itemCell.delegate = self
+        
+        let itemsToDisplay: [Item]?
         
         if searchBarIsEmpty {
             
             if searchBarIsInFocus {
-                print("Show all items.....")
-                itemName = notSelectedItems[indexPath.row].name
-                isItemSelected = notSelectedItems[indexPath.row].isSelected
-                isCheckmarkOn = notSelectedItems[indexPath.row].isCompleted
+                // when searchbar selected and no search text
+                itemsToDisplay = notSelectedItems
             } else {
-                // when no search then show selected items only
-                itemName = selectedItems[indexPath.row].name
-                isItemSelected = selectedItems[indexPath.row].isSelected
-                isCheckmarkOn = selectedItems[indexPath.row].isCompleted
+                // when searchbar not selected and no search text then show selected items only
+                itemsToDisplay = selectedItems
             }
         } else {
-            // when search is active then show search results
-            itemName = foundItems[indexPath.row].name
-            isItemSelected = foundItems[indexPath.row].isSelected
+            // when searchbar selected and there is search text then show search results
+            itemsToDisplay = foundItems
+        }
+        
+
+        if searchBarIsEmpty {
+            
+            if searchBarIsInFocus {
+                // when searchbar selected and no search text
+                itemName = itemsToDisplay?[indexPath.row].name
+                isItemSelected = itemsToDisplay?[indexPath.row].isSelected
+                isCheckmarkOn = itemsToDisplay?[indexPath.row].isCompleted
+            } else {
+                // when searchbar not selected and no search text then show selected items only
+                itemName = itemsToDisplay?[indexPath.row].name
+                isItemSelected = itemsToDisplay?[indexPath.row].isSelected
+                isCheckmarkOn = itemsToDisplay?[indexPath.row].isCompleted
+            }
+        } else {
+            // when searchbar selected and there is search text then show search results
+            itemName = itemsToDisplay?[indexPath.row].name
+            isItemSelected = itemsToDisplay?[indexPath.row].isSelected
             // do not show checkmark status
             isCheckmarkOn = false
         }
         
-        itemCell.itemCheckmark.setOn(isCheckmarkOn, animated: true)
+        itemCell.itemCheckmark.setOn(isCheckmarkOn!, animated: true)
         itemCell.itemLabel.text = itemName
         
-        if isItemSelected {
+        if isItemSelected! {
             itemCell.accessoryType = .checkmark
         } else {
             itemCell.accessoryType = .none
