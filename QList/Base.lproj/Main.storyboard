@@ -65,8 +65,11 @@
                                 <rect key="frame" x="0.0" y="601" width="375" height="66"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VcC-4a-Q1v">
-                                        <rect key="frame" x="155" y="18" width="65" height="30"/>
-                                        <state key="normal" title="Clear List"/>
+                                        <rect key="frame" x="149.5" y="16" width="76" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Clear List">
+                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
                                         <connections>
                                             <action selector="clearListButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="P3u-mI-Py3"/>
                                         </connections>
