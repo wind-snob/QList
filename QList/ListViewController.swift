@@ -57,6 +57,17 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     let searchBar = UISearchBar()
     @IBOutlet weak var tableView: UITableView!
     
+    @IBAction func clearListButtonTap(_ sender: UIButton) {
+        
+        for item in selectedItems {
+            if let index = indexOfItem(withName: item.name) {
+                items[index].isSelected = false
+            }
+        }
+        tableView.reloadData()
+    }
+    
+    
     // given item name returns its index in the items array
     func indexOfItem(withName name:String) -> Int? {
         let index = items.index { (item: Item) -> Bool in
@@ -187,7 +198,7 @@ extension ListViewController {
     
     func searchBarSetup() {
         searchBar.delegate = self
-        searchBar.showsCancelButton = false
+        searchBar.showsCancelButton = true
         searchBar.placeholder = "Add new item"
         //searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
         //searchBar.showsScopeBar = true
