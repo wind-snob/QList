@@ -56,9 +56,10 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     
     let searchBar = UISearchBar()
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var barButton: UIBarButtonItem!
     
-    @IBAction func clearListButtonTap(_ sender: UIButton) {
-        
+    @IBAction func barButtonTap(_ sender: UIBarButtonItem) {
+        // Clear selected list items
         for item in selectedItems {
             if let index = indexOfItem(withName: item.name) {
                 items[index].isSelected = false
@@ -66,6 +67,7 @@ class ListViewController: UIViewController, UISearchBarDelegate {
         }
         tableView.reloadData()
     }
+
     
     
     // given item name returns its index in the items array
@@ -79,6 +81,8 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBarSetup()
+        
+        barButton.title = "Clear Items"
         
         let nib = UINib(nibName: "DescriptionCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "DescriptionCell")
