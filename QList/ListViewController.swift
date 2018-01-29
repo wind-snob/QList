@@ -273,10 +273,12 @@ extension ListViewController {
         
         let attributedStringKeys: [NSAttributedStringKey : Any] = [NSAttributedStringKey.foregroundColor : UIColor.black, NSAttributedStringKey.underlineStyle : 1]
 
+        barButton.title = ""
         barButton.setTitleTextAttributes(attributedStringKeys, for: .normal)
         barButton.isEnabled = false
         searchBar.returnKeyType = .done
         
+        // Create white icon image programatically
         let size = CGSize(width: 24, height: 24)
         UIGraphicsBeginImageContextWithOptions(size, true, 0)
         UIColor.white.setFill()
@@ -287,8 +289,6 @@ extension ListViewController {
 
         searchBar.setImage(icon, for: .search, state: .normal)
         //searchBar.searchTextPositionAdjustment = UIOffset(horizontal: -20, vertical: 0)
-        
-
         //searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
         //searchBar.showsScopeBar = true
         navigationItem.titleView = searchBar
