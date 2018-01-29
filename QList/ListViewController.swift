@@ -8,6 +8,12 @@
 
 import UIKit
 
+enum TableViewMode {
+    case displaySelectedItems
+    case displayAvailableChoices
+    case displaySearchResults
+}
+
 class ListViewController: UIViewController, UISearchBarDelegate {
     
     var items = [Item(name: "Apples"),
@@ -41,6 +47,18 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     var foundItems = [Item]()
     
     var searchBarIsInFocus = false
+    var tableViewMode: TableViewMode {
+            // when searchbar selected and no search text
+            if searchBarIsEmpty && searchBarIsInFocus {
+                return .displayAvailableChoices
+            }
+            // when searchbar selected and there is search text then show search results
+            if searchBarIsInFocus {
+                return .displaySearchResults
+            }
+            // when searchbar not selected and no search text then show selected items only
+            return .displaySelectedItems
+    }
     
     var selectedItems: [Item] {
         return items.filter({ (item: Item) -> Bool in
@@ -55,6 +73,9 @@ class ListViewController: UIViewController, UISearchBarDelegate {
     }
     
     let searchBar = UISearchBar()
+    
+    
+    @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var barButton: UIBarButtonItem!
     
@@ -65,10 +86,8 @@ class ListViewController: UIViewController, UISearchBarDelegate {
                 items[index].isSelected = false
             }
         }
-        tableView.reloadData()
+        reloadData()
     }
-
-    
     
     // given item name returns its index in the items array
     func indexOfItem(withName name:String) -> Int? {
@@ -77,12 +96,37 @@ class ListViewController: UIViewController, UISearchBarDelegate {
         }
         return index
     }
+
+    func reloadData() {
+        switch tableViewMode {
+        case .displayAvailableChoices :
+            searchBar.placeholder = "Type Item Name Here"
+            toolBar.isHidden = true
+            barButton.title = ""
+            barButton.isEnabled = false
+        case .displaySearchResults :
+            searchBar.placeholder = ""
+            toolBar.isHidden = true
+            barButton.title = ""
+            barButton.isEnabled = false
+        case .displaySelectedItems :
+            searchBar.placeholder = "Tap Here to Add Item"
+            if selectedItems.count > 0 {
+                toolBar.isHidden = false
+                barButton.title = "Remove All Items"
+                barButton.isEnabled = true
+            } else {
+                toolBar.isHidden = true
+                barButton.title = ""
+                barButton.isEnabled = false
+            }
+        }
+        tableView.reloadData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBarSetup()
-        
-        barButton.title = "Clear Items"
         
         let nib = UINib(nibName: "DescriptionCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "DescriptionCell")
@@ -92,6 +136,7 @@ class ListViewController: UIViewController, UISearchBarDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 }
 
 // MARK: TableView Delegates
@@ -129,18 +174,14 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
         let itemsToDisplay: [Item]?
         var showCheckmark: Bool?
         
-        if searchBarIsEmpty {
-            if searchBarIsInFocus {
-                // when searchbar selected and no search text
-                itemsToDisplay = notSelectedItems
-                showCheckmark = false
-            } else {
-                // when searchbar not selected and no search text then show selected items only
-                itemsToDisplay = selectedItems
-                showCheckmark = true
-            }
-        } else {
-            // when searchbar selected and there is search text then show search results
+        switch tableViewMode {
+        case .displaySelectedItems :
+            itemsToDisplay = selectedItems
+            showCheckmark = true
+        case .displayAvailableChoices :
+            itemsToDisplay = notSelectedItems
+            showCheckmark = false
+        case .displaySearchResults :
             itemsToDisplay = foundItems
             showCheckmark = false
         }
@@ -191,6 +232,7 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
     }
 }
 
+
 // MARK: Search Bar Utilities
 
 extension ListViewController {
@@ -203,10 +245,14 @@ extension ListViewController {
     func searchBarSetup() {
         searchBar.delegate = self
         searchBar.showsCancelButton = true
-        searchBar.placeholder = "Add new item"
+        searchBar.placeholder = "Tap Here to Add Item"
+        barButton.title = ""
+        barButton.isEnabled = false
+        searchBar.returnKeyType = .done
         //searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
         //searchBar.showsScopeBar = true
         navigationItem.titleView = searchBar
+        //navigationItem.title = "Quick List"
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -226,7 +272,7 @@ extension ListViewController {
 //            searchBar.showsCancelButton = true
 //        }
         searchResults(for: searchText)
-        tableView.reloadData()
+        reloadData()
     }
     
     // MARK: Add new item
@@ -249,7 +295,7 @@ extension ListViewController {
                 searchBar.text = nil
             }
         }
-        tableView.reloadData()
+        reloadData()
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -257,7 +303,7 @@ extension ListViewController {
         // show all items when focus goes to searchbar
         searchBarIsInFocus = true
         //foundItems = items
-        tableView.reloadData()
+        reloadData()
     }
     
     

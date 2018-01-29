@@ -89,6 +89,7 @@
                     <connections>
                         <outlet property="barButton" destination="1Nf-hE-gBJ" id="ylU-57-Y34"/>
                         <outlet property="tableView" destination="cHC-zU-Rhx" id="FrN-dH-aAQ"/>
+                        <outlet property="toolBar" destination="PSY-xa-QyC" id="bpF-WJ-gxe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
