@@ -143,6 +143,27 @@ class ListViewController: UIViewController, UISearchBarDelegate {
 
 extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCellDelegate {
     
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        // Define table view swipe action for view showing selected items
+        if tableViewMode == .displaySelectedItems {
+            let removeAction = UIContextualAction(style: .normal, title: "Remove") { (action: UIContextualAction, sourceView: UIView, actionPerformed:(Bool)-> ()) in
+                
+                // find the right object and set it to not selected
+                if let index = self.indexOfItem(withName: self.selectedItems[indexPath.row].name) {
+                    self.items[index].isSelected = false
+                }
+                self.reloadData()
+                actionPerformed(true)
+            }
+            //return defined swipe action
+            return UISwipeActionsConfiguration(actions: [removeAction])
+        } else {
+            //otherwise no swipe action should be available
+            return UISwipeActionsConfiguration(actions: [])
+        }
+    }
+    
     // ItemCellDelegate protocol implementation
     func didUpdateCell(withLabel label: UILabel, andCheckmark checkmark: UISwitch) {
         // update the model
@@ -246,7 +267,14 @@ extension ListViewController {
         searchBar.delegate = self
         searchBar.showsCancelButton = true
         searchBar.placeholder = "Tap Here to Add Item"
-        barButton.title = ""
+        //let font = UIFont.systemFontSize.=
+        //barButton.setTitleTextAttributes([NSAttributedStringKey : Any]?, for: .font)
+        
+        let attributedStringKeys: [NSAttributedStringKey : Any] = [NSAttributedStringKey.foregroundColor : UIColor.black, NSAttributedStringKey.underlineStyle : 1]
+        
+        //barButton.setTitleTextAttributes([NSAttributedStringKey.foregroundColor : UIColor.black], for: .normal)
+        //barButton.setTitleTextAttributes([NSAttributedStringKey.underlineStyle : 1 ], for: .normal)
+        barButton.setTitleTextAttributes(attributedStringKeys, for: .normal)
         barButton.isEnabled = false
         searchBar.returnKeyType = .done
         //searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
