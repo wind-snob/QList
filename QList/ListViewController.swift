@@ -199,12 +199,15 @@ extension ListViewController: UITableViewDelegate, UITableViewDataSource, ItemCe
         case .displaySelectedItems :
             itemsToDisplay = selectedItems
             showCheckmark = true
+            searchBar.showsCancelButton = false
         case .displayAvailableChoices :
             itemsToDisplay = notSelectedItems
             showCheckmark = false
+            searchBar.showsCancelButton = true
         case .displaySearchResults :
             itemsToDisplay = foundItems
             showCheckmark = false
+            searchBar.showsCancelButton = true
         }
         
         if showCheckmark! {
@@ -265,18 +268,27 @@ extension ListViewController {
     
     func searchBarSetup() {
         searchBar.delegate = self
-        searchBar.showsCancelButton = true
+        searchBar.showsCancelButton = false
         searchBar.placeholder = "Tap Here to Add Item"
-        //let font = UIFont.systemFontSize.=
-        //barButton.setTitleTextAttributes([NSAttributedStringKey : Any]?, for: .font)
         
         let attributedStringKeys: [NSAttributedStringKey : Any] = [NSAttributedStringKey.foregroundColor : UIColor.black, NSAttributedStringKey.underlineStyle : 1]
-        
-        //barButton.setTitleTextAttributes([NSAttributedStringKey.foregroundColor : UIColor.black], for: .normal)
-        //barButton.setTitleTextAttributes([NSAttributedStringKey.underlineStyle : 1 ], for: .normal)
+
         barButton.setTitleTextAttributes(attributedStringKeys, for: .normal)
         barButton.isEnabled = false
         searchBar.returnKeyType = .done
+        
+        let size = CGSize(width: 24, height: 24)
+        UIGraphicsBeginImageContextWithOptions(size, true, 0)
+        UIColor.white.setFill()
+        let rect = CGRect(x: 0, y: 0, width: 24, height: 24)
+        UIRectFill(rect)
+        let icon = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        searchBar.setImage(icon, for: .search, state: .normal)
+        //searchBar.searchTextPositionAdjustment = UIOffset(horizontal: -20, vertical: 0)
+        
+
         //searchBar.scopeButtonTitles = ["Selected Items", "All Items"]
         //searchBar.showsScopeBar = true
         navigationItem.titleView = searchBar
@@ -288,7 +300,9 @@ extension ListViewController {
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.endEditing(true)
+        searchBar.text = nil
+        searchBar.resignFirstResponder()
+        reloadData()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -325,6 +339,7 @@ extension ListViewController {
         }
         reloadData()
     }
+
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         print("searchBarTextDidBeginEditing")
